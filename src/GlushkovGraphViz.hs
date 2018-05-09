@@ -1,6 +1,6 @@
 module GlushkovGraphViz where
 
-import Data.List (find, nub)
+import Data.List (nub)
 import Glushkov
 
 type StateOfStates = [RegT]
@@ -18,7 +18,7 @@ automatonPath t word = [initS] : path t word [initS]
       in next : path t ls next
     path t (l:ls) next =
       let next' = filterByLetter l $ concatMap (nextS t) next
-      in next' : (path t ls next')
+      in next' : path t ls next'
 
 --returns itself if the StateOfStates is qualified as an accept state
 --TODO: returning a Maybe StateOfStates only made code uglier
