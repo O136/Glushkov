@@ -23,7 +23,7 @@ automatonPath t word = [initS] : path t word [initS]
 --returns itself if the StateOfStates is qualified as an accept state
 maybeAcceptS :: RegT -> StateOfStates -> StateOfStates
 maybeAcceptS t s =
-  if (any id $ (==) <$> (acceptS t) <*> s)
+  if any (`elem` s) (acceptS t)
     then s
     else []
 
