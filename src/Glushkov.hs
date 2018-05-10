@@ -1,6 +1,6 @@
 module Glushkov where
 
---If we se:e epsilon in regex pattern it will be Letter (_, 'eps'), so Epsilon cons has a role of more like Nil
+--If we see epsilon in regex pattern it will be Letter (_, 'eps'), so Epsilon cons has a role of more like Nil
 data RegT
   = Epsilon
   | Letter (Int, Char)
@@ -39,11 +39,12 @@ nextS t leaf = nextS t leaf []
   where
     nextS t leaf acc =
       case t of
-        Concat (r1, r2) -> nextS r1 leaf r1' ++ nextS r2 leaf acc
-          where r1' =
-                  if empty r2
-                    then firstS r2 ++ acc
-                    else firstS r2
+        Concat (r1, r2) ->
+          let r1' =
+                if empty r2
+                  then firstS r2 ++ acc
+                  else firstS r2
+          in nextS r1 leaf r1' ++ nextS r2 leaf acc
         Or (r1, r2) -> nextS r1 leaf acc ++ nextS r2 leaf acc
         Star r1 -> nextS r1 leaf (firstS r1 ++ acc)
         x@(Letter _) ->
@@ -71,4 +72,3 @@ acceptS t =
   if not (empty t)
     then lastS t
     else initS : lastS t
-
