@@ -21,10 +21,9 @@ automatonPath t word = [initS] : path t word [initS]
       in next' : path t ls next'
 
 --returns itself if the StateOfStates is qualified as an accept state
---TODO: returning a Maybe StateOfStates only made code uglier
 maybeAcceptS :: RegT -> StateOfStates -> StateOfStates
 maybeAcceptS t s =
-  if or (map (\trueAcceptS -> elem trueAcceptS s) $ acceptS t)
+  if (any id $ (==) <$> (acceptS t) <*> s)
     then s
     else []
 
@@ -43,7 +42,7 @@ trans2Str _ = ""
 graphVizAutomaton :: RegT -> String -> String
 graphVizAutomaton t word =
   let path = automatonPath t word
-      trans = nub $ zip path (tail path) --extract unique "edges/transitions"
+      trans = nub $ zip path (tail path) --extract unique transitions
   in "\ndigraph nfa {\n\
       \rankdir=LR; node [shape=none,width=0,height=0,margin=0]; start [label=\"\"];\n\
       \node [shape=doublecircle];\n" ++
