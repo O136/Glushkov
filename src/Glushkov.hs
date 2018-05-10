@@ -15,8 +15,8 @@ initS = Letter (-1, '#')
 empty :: RegT -> Bool
 empty t =
   case t of
-    Concat (l, r) -> empty l && empty r
-    Or (l, r) -> empty l || empty r
+    Concat (r1, r2) -> empty r1 && empty r2
+    Or (r1, r2) -> empty r1 || empty r2
     Letter _ -> False
     _ -> True
 

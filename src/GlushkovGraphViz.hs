@@ -13,7 +13,7 @@ automatonPath t word = [initS] : path t word [initS]
   where
     filterByLetter l = filter (\(Letter (_, l')) -> l' == l)
     path t [] _ = []
-    path t (l:ls) (initS:[]) =
+    path t (l:ls) [initS] =
       let next = filterByLetter l (firstS t)
       in next : path t ls next
     path t (l:ls) next =
@@ -31,7 +31,7 @@ maybeAcceptS t s =
 state2Str :: StateOfStates -> String
 state2Str [] = ""
 state2Str s =
-  "\"{" ++ tail ((concatMap (\(Letter (i, _)) -> ',' : show i) s) ++ "}\"")
+  "\"{" ++ tail (concatMap (\(Letter (i, _)) -> ',' : show i) s) ++ "}\""
 
 trans2Str :: (StateOfStates, StateOfStates) -> String
 trans2Str (s, s'@(Letter (_, l):_)) =
