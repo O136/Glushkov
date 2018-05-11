@@ -3,10 +3,17 @@ module GlushkovGraphViz where
 import Data.List (nub)
 import Glushkov
 
-type StateOfStates = [RegT]
+--identifier of a state/(letter leaf)
+state2Str :: StateOfStates -> String
+state2Str [] = ""
+state2Str s =
+  "\"{" ++ tail (concatMap (\(Letter (i, _)) -> ',' : show i) s) ++ "}\""
 
---TODO: maybe check first if the word is valid and only then return a path ?
---because otherwise only the successfully passed states will be yielded
+trans2Str :: (StateOfStates, StateOfStates) -> String
+trans2Str (s, s'@(Letter (_, l):_)) =
+  state2Str s ++ "->" ++ state2Str s' ++ " [label=\"" ++ show l ++ "\"]"
+trans2Str _ = ""
+
 --returns the path travelled by the word in the automaton as a list of states
 automatonPath :: RegT -> String -> [StateOfStates]
 automatonPath t word = [initS] : path t word [initS]
@@ -19,24 +26,6 @@ automatonPath t word = [initS] : path t word [initS]
     path t (l:ls) next =
       let next' = filterByLetter l $ concatMap (nextS t) next
       in next' : path t ls next'
-
---returns itself if the StateOfStates is qualified as an accept state
-maybeAcceptS :: RegT -> StateOfStates -> StateOfStates
-maybeAcceptS t s =
-  if any (`elem` s) (acceptS t)
-    then s
-    else []
-
---identifier of a state/(letter leaf)
-state2Str :: StateOfStates -> String
-state2Str [] = ""
-state2Str s =
-  "\"{" ++ tail (concatMap (\(Letter (i, _)) -> ',' : show i) s) ++ "}\""
-
-trans2Str :: (StateOfStates, StateOfStates) -> String
-trans2Str (s, s'@(Letter (_, l):_)) =
-  state2Str s ++ "->" ++ state2Str s' ++ " [label=\"" ++ show l ++ "\"]"
-trans2Str _ = ""
 
 --given a word it creates the repr. for a graphViz automaton
 graphVizAutomaton :: RegT -> String -> String

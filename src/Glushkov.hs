@@ -9,6 +9,8 @@ data RegT
   | Or (RegT, RegT)
   deriving (Show, Eq)
 
+type StateOfStates = [RegT]
+
 initS :: RegT
 initS = Letter (-1, '#')
 
@@ -72,3 +74,11 @@ acceptS t =
   if not (empty t)
     then lastS t
     else initS : lastS t
+
+--returns itself if the StateOfStates is qualified as an accept state(needed for powerset constr.)
+maybeAcceptS :: RegT -> StateOfStates -> StateOfStates
+maybeAcceptS t s =
+  if any (`elem` s) (acceptS t)
+    then s
+    else []
+
