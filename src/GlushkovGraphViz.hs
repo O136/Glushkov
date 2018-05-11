@@ -14,6 +14,9 @@ trans2Str (s, s'@(Letter (_, l):_)) =
   state2Str s ++ "->" ++ state2Str s' ++ " [label=\"" ++ show l ++ "\"]"
 trans2Str _ = ""
 
+--TODO: how about, instead of returning the full path made by the word,
+--only just the unique transitions with a set, so no need for nub anymore
+
 --returns the path travelled by the word in the automaton as a list of states
 automatonPath :: RegT -> String -> [StateOfStates]
 automatonPath t word = [initS] : path t word [initS]
